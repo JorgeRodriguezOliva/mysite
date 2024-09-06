@@ -16,15 +16,15 @@ def create_region(cod,nombre):
     region.save()
     return region
 
-def create_comuna(cod,nombre,cod_region)
+def create_comuna(cod,nombre,cod_region):
     region=Region.objects.get(cod=cod_region)
     comuna=Comuna(cod=cod,nombre=nombre,cod_region=region)
     comuna.save()
     return comuna
 
 def insertar_inmueble(data):
-    arrendador = User.objects.get(id=data['id_user'])
-    comuna = Comuna.objects.get(cod=data['comuna_cod'])
+    arrendador = User.objects.get(id=data['arrendador'])
+    comuna = Comuna.objects.get(cod=data['comuna'])
     inmueble=Inmueble(
         arrendador=arrendador,
         tipo_inmueble=data['tipo_inmueble'],

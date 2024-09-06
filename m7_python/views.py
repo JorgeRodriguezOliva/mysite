@@ -1,8 +1,7 @@
 from django.shortcuts import render
-# from .models import UserProfile, Region, Comuna, Inmueble, Solicitud
-# from django.contrib.auth import login
+from .services import get_all_inmuebles
 
 
-# def indice(req):
-#     context = {"data": "Acerca de nosotros"}
-#     return render(req, 'index.html', context)
+def indexView(req):
+    inmuebles=get_all_inmuebles()
+    return render(req, 'index.html',{'inmuebles':inmuebles})

@@ -52,7 +52,8 @@ class Inmueble(models.Model):
     disponible = models.BooleanField(default=True)
     comuna = models.ForeignKey(Comuna, related_name='inmuebles', on_delete=models.RESTRICT)
     arrendador = models.ForeignKey(User, related_name='inmuebles', on_delete=models.RESTRICT)
-
+    def __str__(self):
+        return f'{self.nombre} {self.descripcion} {self.comuna.region.nombre}'
 
 class Solicitud(models.Model):
     ESTADOS = (('pediente', 'Pendiente'), ('rechazada', 'Rechazada'), ('aprobada', 'Aprobada'), ('finalizada', 'Finalizada'))

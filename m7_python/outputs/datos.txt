@@ -1,1 +1,18 @@
 
+__ listado_inmuebles_comuna_orm __
+1__ Nombre: [Loft de Diseño Industrial], Descripción:[Loft con diseño industrial] 		Comuna: Pucón
+
+ __ listado_inmuebles_comuna_sql __
+1__ Nombre: [Loft Urbano], Descripción:[Loft en el corazón de la ciudad] 		Comuna: Ovalle
+
+__ listado_inmuebles_region_orm __
+1__ Nombre: [Loft de Diseño Industrial], Descripción:[Loft con diseño industrial] 		Región: Del Biobío
+2__ Nombre: [Casa de Verano], Descripción:[Casa para disfrutar el verano] 		Región: Del Biobío
+
+ __ listado_inmuebles_region_sql __
+1__ Nombre: [Apartamento Elegante], Descripción:[Apartamento con acabados de lujo] 		Región: De Valparaíso
+2__ Nombre: [Apartamento Minimalista], Descripción:[Apartamento con diseño minimalista] 		Región: De Valparaíso
+3__ Nombre: [Casa Familiar], Descripción:[Amplia casa para toda la familia] 		Región: De Valparaíso
+4__ Nombre: [Estudio Acogedor], Descripción:[Estudio ideal para solteros] 		Región: De Valparaíso
+5__ Nombre: [Penthouse con Vistas], Descripción:[Penthouse con terraza panorámica] 		Región: De Valparaíso
+6__ Nombre: [Casa Rústica], Descripción:[Casa de campo con chimenea] 		Región: De Valparaíso
