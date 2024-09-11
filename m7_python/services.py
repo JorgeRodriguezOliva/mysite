@@ -1,5 +1,18 @@
-from django.contrib.auth.models import User
-from m7_python.models import UserProfile,Region,Comuna,Inmueble,Solicitud
+from .models import UserProfile, Region, Comuna, Inmueble, Solicitud, User
+
+
+def get_or_create_user_profile(user):
+    try:
+        user_profile, created = UserProfile.objects.get_or_create(user=user)
+        if created:
+            print("Se ha creado un nuevo perfil para el usuario.")
+        else:
+            print("El perfil ya existe")
+        return user_profile
+    except Exception as e:
+        print(F'Error al obtener o crear el perfil del usuario. {e}')
+        return None
+
 
 def create_user(new_user):
     user = User.objects.create_user(
@@ -11,21 +24,24 @@ def create_user(new_user):
     )
     return user
 
-def create_region(cod,nombre):
-    region=Region(cod=cod,nombre=nombre)
+
+def create_region(cod, nombre):
+    region = Region(cod=cod, nombre=nombre)
     region.save()
     return region
 
-def create_comuna(cod,nombre,cod_region):
-    region=Region.objects.get(cod=cod_region)
-    comuna=Comuna(cod=cod,nombre=nombre,cod_region=region)
+
+def create_comuna(cod, nombre, cod_region):
+    region = Region.objects.get(cod=cod_region)
+    comuna = Comuna(cod=cod, nombre=nombre, cod_region=region)
     comuna.save()
     return comuna
+
 
 def insertar_inmueble(data):
     arrendador = User.objects.get(id=data['arrendador'])
     comuna = Comuna.objects.get(cod=data['comuna'])
-    inmueble=Inmueble(
+    inmueble = Inmueble(
         arrendador=arrendador,
         tipo_inmueble=data['tipo_inmueble'],
         comuna=comuna,
@@ -43,13 +59,15 @@ def insertar_inmueble(data):
     inmueble.save()
     return inmueble
 
+
 def get_all_inmuebles():
     inmuebles = Inmueble.objects.all()
     return inmuebles
 
+
 def actualizar_disponibilidad_inmueble(id_inmueble, disponible):
     try:
-        inmueble = Inmueble.objects.get(pk=id_inmueble) 
+        inmueble = Inmueble.objects.get(pk=id_inmueble)
         inmueble.disponible = disponible
         inmueble.save()
         return {
@@ -66,6 +84,8 @@ def actualizar_disponibilidad_inmueble(id_inmueble, disponible):
             "success": False,
             "message": f"Error al actualizar la disponibilidad del inmueble: {str(e)}"
         }
+
+
 def eliminar_inmueble(id_inmueble):
     try:
         inmueble = Inmueble.objects.get(pk=id_inmueble)
@@ -83,4 +103,4 @@ def eliminar_inmueble(id_inmueble):
         return {
             "success": False,
             "message": f"Error al eliminar el inmueble: {str(e)}"
-        }        
+        }

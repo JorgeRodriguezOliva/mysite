@@ -1,51 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<p>App Web de Arriendos de Inmuebles</p>
+<div class="container mt-5">
+    <div class="row">
+        {% for i in inmuebles %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="https://definicion.de/wp-content/uploads/2010/12/casa.jpg" class="card-img.top"
+                    alt="Imagen de casa" />
+                <div class="card-body">
+                    <h5 class="card-title">{{ i.nombre}}</h5>
+                    <p class="card-text">{{i.descripcion}}</p>
+                    <p class="card-text">{{i.comuna.nombre}}</p>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arriendos</title>
-    <!-- Enlace a Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" />
-</head>
-
-<body>
-    <p>App Web de Arriendos de Inmuebles</p>
-    <div class="container mt-5">
-        <div class="row">
-            {% for i in inmuebles %}
-            <div class="col-md-4 mb-4">
-                <div class="card">
-                    <img src="https://definicion.de/wp-content/uploads/2010/12/casa.jpg" class="card-img.top"
-                        alt="Imagen de casa" />
-                    <div class="card-body">
-                        <h5 class="card-title">{{ i.nombre}}</h5>
-                        <p class="card-text">{{i.descripcion}}</p>
-                        <p class="card-text">{{i.comuna.nombre}}</p>
-
-                    </div>
                 </div>
             </div>
-            {% endfor %}
         </div>
+        {% endfor %}
     </div>
-
-
-<!-- 
-    <div>
-        <label for="id_tipo_inmueble">Tipo de Inmueble:</label>
-        <select name="tipo_inmueble" id="id_tipo_inmueble">
-            <option value="casa">Casa</option>
-            <option value="departamento">Departamento</option>
-            <option value="bodega">Bodega</option>
-            <option value="parcela">Parcela</option>
-        </select>
-    </div> -->
-
-    <!-- Enlace a Bootstrap JS y dependencias -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+</div>
+{% endblock %}

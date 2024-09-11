@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="col-12 col-md-6 offset-0 offset-md-3 mt-4 mb-4">
+        <h3 class="text-center">
+            Sus cambios de perfil se guardaron con éxito!!!
+        </h3>
+        <div class="text-center">
+            <a href="{% url 'profile' %}" class="btn btn-primary">
+                Volver al Perfil
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
