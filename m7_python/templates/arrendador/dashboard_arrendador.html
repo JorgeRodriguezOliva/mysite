@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="container mt-5">
+    <div class="row">
+      <!-- manejo de VISTA de mensajes de errores que django da por defecto al usar el message -->
+      {% if messages %}
+        <div>
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if inmuebles %}
+        {% for i in inmuebles %}
+          <div class="col-md-4 mb-4">
+            {% if i.disponible %}
+              <div class="position-relative top-0 start-0 p-2 bg-success text-white">
+                  Disponible
+              </div>
+            {% else %}
+              <div class="position-relative top-0 start-0 p-2 bg-danger text-white">
+                  No Disponible
+              </div>
+          {% endif %}
+            <a class="nav-link" href="{% url 'detail_inmueble' inmueble_id=i.id %}">
+              <div class="card">
+                <img
+                  src="https://definicion.de/wp-content/uploads/2010/12/casa.jpg"
+                  class="card-img-top"
+                  alt="Imagen de inmueble"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">{{ i.nombre }}</h5>
+                  <p class="card-text">{{ i.descripcion }}</p>
+                  <p class="card-text">{{ i.comuna.nombre }}</p>
+                  <a class="btn btn-primary" href="{% url 'edit_inmueble' inmueble_id=i.id %}">Editar</a>
+                  <a class="btn btn-danger ms-2" href="{% url 'delete_inmueble' inmueble_id=i.id %}">Eliminar</a>
+               
+                </div>
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p>No tienes inmuebles registrados.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -36,14 +36,14 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                 {% if user.is_authenticated and user.userprofile.rol == 'arrendador' %}
                 <li class="nav-item">
-                    <a class="nav-link " href="#">
+                    <a class="nav-link " href="{% url 'create_inmueble' %}">
                         Crear Inmueble
                     </a>
                 </li>
                 {% endif %}
                 {% if user.is_authenticated and user.userprofile.rol == 'arrendatario' %}
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'solicitudes' %}">
                         Ver Lista de Solicitudes
                     </a>
                 </li>
@@ -60,18 +60,10 @@
                 {% block logout %}
                 {% include 'registration/logout.html' %}
                 {% endblock %}
+                
                 {% endif %}
             </ul>
         </div>
     </div>
 </nav>
 
-<!-- <li class="nav-item">
-    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
-        {% csrf_token %}
-    </form>
-    <a class="nav-link btn btn-secondary text-white" href="#"
-        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-        Cerrar sesión
-    </a>
-</li> -->

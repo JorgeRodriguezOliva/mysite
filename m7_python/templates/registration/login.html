@@ -11,7 +11,7 @@
 <p>Su cuenta no tiene acceso a esta página. Para continuar,
     inicie sesión con una cuenta que tenga acceso.</p>
 {% else %}
-<p>Por favor inicie sesión para ver esta página.</p>
+<h2 class="text-center"><strong>Por favor inicie sesión para ver esta página.</strong></h2>
 {% endif %}
 {% endif %}
 
@@ -20,16 +20,19 @@
     <div class="col-12 col-md-6 offset-0 offset-md-3 mt-4 mb-4">
         <table>
             <tr>
-                <td>{{ form.username.label_tag }}</td>
+                <td><strong>{{ form.username.label_tag }}</strong></td>
                 <td>{{ form.username }}</td>
             </tr>
             <tr>
-                <td>{{ form.password.label_tag }}</td>
+                <td><strong>{{ form.password.label_tag }}</strong></td>
                 <td>{{ form.password }}</td>
             </tr>
         </table>
         <input type="submit" value="Login">
         <input type="hidden" name="next" value="{{ next }}">
+    </div>
+    <div class="text-center p-3">
+        <p>¿Aún no tienes una cuenta? <a href="{% url 'register' %}"><strong>Regístrate aquí</strong></a></p>
     </div>
 </form>
 {% endblock %}

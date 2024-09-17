@@ -24,6 +24,16 @@ def create_user(new_user):
     )
     return user
 
+def create_user_by_params(username,email,first_name,last_name,password):
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name,
+        password=password
+    )
+    return user
+# create_user_by_params("mau", "m@gmail.com", "mauro" .... ....)
 
 def create_region(cod, nombre):
     region = Region(cod=cod, nombre=nombre)
@@ -37,6 +47,11 @@ def create_comuna(cod, nombre, cod_region):
     comuna.save()
     return comuna
 
+def create_inmueble_for_arrendador(user, data):
+    new_inmueble = Inmueble(**data)
+    new_inmueble.arrendador = user 
+    new_inmueble.save()
+    return new_inmueble
 
 def insertar_inmueble(data):
     arrendador = User.objects.get(id=data['arrendador'])
@@ -61,8 +76,13 @@ def insertar_inmueble(data):
 
 
 def get_all_inmuebles():
-    inmuebles = Inmueble.objects.all()
-    return inmuebles
+    # inmuebles = Inmueble.objects.all()
+    try:
+        inmueble= Inmueble.objects.filter(disponible=True)
+        return inmueble
+    except Exception as e:
+        print(f"Error al obtener los inmuebles: {str(e)}")
+        return []
 
 
 def actualizar_disponibilidad_inmueble(id_inmueble, disponible):
@@ -104,3 +124,14 @@ def eliminar_inmueble(id_inmueble):
             "success": False,
             "message": f"Error al eliminar el inmueble: {str(e)}"
         }
+        
+def get_inmuebles_for_arrendador(user):
+    rol = user.userprofile.rol 
+    if rol != 'arrendador':
+        print(f'no es arrendador')
+        return [] 
+    inmuebles = Inmueble.objects.filter(arrendador=user)
+    if not inmuebles.exists():
+        print(f'no hay inmuebles')
+        return []
+    return inmuebles

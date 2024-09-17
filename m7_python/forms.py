@@ -1,8 +1,8 @@
 # aquí van nuestros Formularios
-from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
-from .models import UserProfile, ContactForm
+from .models import UserProfile, ContactForm, Inmueble
+from django.contrib.auth.models import User
 
 #TODO_ REGISTER - FORM
 
@@ -40,3 +40,44 @@ class ContactModelForm(forms.ModelForm):
     class Meta:
         model = ContactForm
         fields = ['customer_email', 'customer_name', 'message']
+        
+#___________________________________________________________________________________________________
+#███████████████████████████████████████████████████████████████████████████████████████████████████
+#TODO__ FORM INMUEBLE - CREAR 
+class InmuebleForm(forms.ModelForm):
+    class Meta: 
+        model = Inmueble
+        fields = [
+            'nombre', 'descripcion', 'm2_construidos', 'm2_totales',
+            'num_estacionamientos', 'num_habitaciones', 'num_baños',
+            'direccion', 'tipo_inmueble', 'precio', 'disponible',
+            'comuna'
+        ]
+
+#___________________________________________________________________________________________________
+#███████████████████████████████████████████████████████████████████████████████████████████████████
+#TODO__ FORM SOLICITUDES 
+
+
+
+#___________________________________________________________________________________________________
+#███████████████████████████████████████████████████████████████████████████████████████████████████
+#TODO__ FORM DISPONIBILIDAD  
+
+class EditDisponibilidadForm(forms.ModelForm):
+    class Meta:
+        model = Inmueble
+        fields = ['disponible']  # Solo permitimos modificar la disponibilidad
+        widgets = {
+            'disponible': forms.CheckboxInput(),  # Input como checkbox (disponible o no)
+        }
+        
+#___________________________________________________________________________________________________
+#███████████████████████████████████████████████████████████████████████████████████████████████████
+#TODO__ FORM EJEMPLO 
+class EjemploInmuebleForm(forms.ModelForm):
+    class Meta: 
+        model = Inmueble
+        fields = [
+            'nombre', 'descripcion'
+        ]       
