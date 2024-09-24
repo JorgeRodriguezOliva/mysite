@@ -32,7 +32,7 @@
             <td>{{ solicitud.get_estado_display }}</td>
             <td>
                 {% if solicitud.estado == 'pendiente' %}
-                    <a href="#" class="btn btn-danger">Cancelar</a>
+                    <a href="{% url 'cancelar_solicitud' solicitud_id=solicitud.id %}" class="btn btn-danger">Cancelar</a>
                 {% else %}
                     <p> - </p>
                 {% endif %}

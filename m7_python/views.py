@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .services import get_all_inmuebles, get_or_create_user_profile, get_inmuebles_for_arrendador, insertar_inmueble,create_inmueble_for_arrendador,actualizar_disponibilidad_inmueble
+from .services import (get_all_inmuebles, get_or_create_user_profile, get_inmuebles_for_arrendador, 
+                    insertar_inmueble,create_inmueble_for_arrendador,actualizar_disponibilidad_inmueble)
 from django.contrib.auth.decorators import login_required
-from .forms import CustomUserCreationForm, UserProfileForm, UserEditProfileForm, UserForm, ContactModelForm,InmuebleForm, EditDisponibilidadForm
+from .forms import (CustomUserCreationForm, UserProfileForm, UserEditProfileForm, UserForm, 
+                    ContactModelForm,InmuebleForm, EditDisponibilidadForm,UpdateSolicitudEstadoForm)
 from .models import UserProfile, ContactForm, Region,Comuna, Inmueble, User, Solicitud
 from django.contrib.auth import login
 from django.contrib import messages
@@ -12,7 +14,7 @@ from .decorators import rol_requerido
 def not_authorized_view(request):
     return render(request, "not_authorized.html", {})
 
-@login_required
+# @login_required
 def indexView(request):
     if request.user.is_authenticated:
         profile = get_or_create_user_profile(request.user)
@@ -26,10 +28,40 @@ def indexView(request):
     else:
         return redirect('login')
 
+def buscar_por_nombre(request):
+    pass
+#! Estas van a ser funciones (services)
+#* x REGION y x COMUNA
+def filtros_combinados(inmuebles, region='todas', comuna='todas'):
+    if region != 'todas':
+        inmuebles = inmuebles.filter(comuna__region__nombre=region)
+    if comuna != 'todas':
+        inmuebles = inmuebles.filter(comuna__nombre=comuna)
+    return inmuebles 
+
+
 @login_required   
 def index_arrendatario(request):
     inmuebles = get_all_inmuebles()
-    return render(request,'arrendatario/index_arrendatario.html',{'inmuebles':inmuebles} )
+    #* Manejo de si el Inmueble ha sido solicitado o no por el arrendatario
+    #* Agregamos al inmueble una nueva prop solicitudes_filtradas
+    user = request.user
+    for inmueble in inmuebles:
+        # Obtener las solicitudes del inmueble que pertenezcan al usuario actual
+        inmueble.solicitudes_filtradas = inmueble.solicitudes.filter(arrendatario=user,estado__in=['pendiente', 'aprobada'])
+    #*--------------------------------------------------------------------
+    # inmuebles = filtros_combinados(inmuebles, 'De Valparaíso')
+    # inmuebles = filtros_combinados(inmuebles, 'De Valparaíso')
+    comunas = Comuna.objects.all().order_by('nombre')
+    regiones = Region.objects.all().order_by('nombre')
+    comuna = request.GET.get('comuna', 'todas')
+    region = request.GET.get('region', 'todas')
+    print(f'-comuna-> {comuna}')
+    print(f'-region-> {region}')
+    # if region == 'todas':
+    #     comuna = 'todas'
+    inmuebles = filtros_combinados(inmuebles, region, comuna)
+    return render(request,'arrendatario/index_arrendatario.html',{'inmuebles':inmuebles, 'comunas':comunas, 'selected_comuna': comuna, 'regiones':regiones, 'selected_region': region} )
 
 @login_required 
 def dashboard_arrendador(request):
@@ -50,6 +82,9 @@ def register(request):
 @login_required
 def register_rol(request):
     user_profile = get_or_create_user_profile(request.user)
+    print(request.user)
+    print(request.user.id)
+    print(user_profile)
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=user_profile)
         if form.is_valid():
@@ -133,8 +168,8 @@ def create_inmueble(request):
     return render(request, 'arrendador/create_inmueble.html', {'form': form})
 
 
-# @login_required
-# @rol_requerido('arrendador')
+@login_required
+@rol_requerido('arrendador')
 def create_inmueble2(request):
     regiones = Region.objects.all()
     comunas = Comuna.objects.all().order_by('nombre')
@@ -201,7 +236,11 @@ def delete_inmueble(request, inmueble_id):
 @login_required
 def detail_inmueble(request, inmueble_id):
     inmueble = get_object_or_404(Inmueble, id=inmueble_id)
-    # inmueble =  Inmueble.objects.get(id=inmueble_id)
+    #* Agrego esto para diferenciar de solicitud ya enviada de no haber enviado a este inmueble
+    inmueble.solicitudes_filtradas = inmueble.solicitudes.filter(
+            arrendatario=request.user,
+            estado__in=['pendiente', 'aprobada']  # Solo solicitudes pendientes o aprobadas
+        )
     return render(request, 'detail_inmueble.html', {'inmueble': inmueble})
 
 @login_required
@@ -241,13 +280,9 @@ def send_solicitud(request, inmueble_id):
 
 
 def view_list_user_solicitudes(request):
-    
     arrendatario =  get_object_or_404(User, id=request.user.id)
     solicitudes = Solicitud.objects.filter(arrendatario=arrendatario)
-    return render(request, 'arrendatario/list_user_solicitudes.html', {
-        'solicitudes': solicitudes,
-        'arrendatario': arrendatario
-    })
+    return render(request, 'arrendatario/list_user_solicitudes.html', {'solicitudes': solicitudes,'arrendatario': arrendatario})
 
 #*___________________________________________HITO 4 FIN *****************
 
@@ -256,20 +291,37 @@ def view_list_user_solicitudes(request):
 #* del ARRENDADOR
 @login_required
 def view_list_solicitudes(request, inmueble_id):
-    pass 
+    # Obtenemos inmueble para validar previamente
+    inmueble = get_object_or_404(Inmueble, id=inmueble_id) 
+    solicitudes = Solicitud.objects.filter(inmueble_id=inmueble_id)
+    return render(request, 'arrendador/list_solicitudes.html', {'inmueble':inmueble, 'solicitudes': solicitudes})
+    
 
 @login_required
 def edit_status_solicitud(request, solicitud_id):
-    pass 
+    solicitud = get_object_or_404(Solicitud, id=solicitud_id) 
+    if request.method == 'POST':
+        form = UpdateSolicitudEstadoForm(request.POST, instance=solicitud)
+        if form.is_valid():
+            form.save()
+            print(f'--> {form.cleaned_data['estado']}')
+            return redirect('view_list_solicitudes', inmueble_id=solicitud.inmueble.id)
+    else:
+        form = UpdateSolicitudEstadoForm(instance=solicitud)
+    return render(request, 'arrendador/edit_status_solicitud.html', {'form': form, 'solicitud': solicitud})
 
+
+@login_required
+@rol_requerido('arrendatario')
 def cancelar_solicitud(request, solicitud_id):
-    pass 
-#! Estas van a ser funciones (services)
-#* x REGION y x COMUNA
-def filtros(request):
-    pass 
-
-def buscar_por_nombre(request):
-    pass
-
+    solicitud = get_object_or_404(Solicitud, id=solicitud_id)
+    inmueble = solicitud.inmueble
+    # Eliminar la solicitud solo si está en estado 'pendiente'
+    if solicitud.estado == 'pendiente':
+        solicitud.delete()
+        messages.success(request, f'Solicitud cancelada para el inmueble {inmueble.nombre}')
+        return redirect('solicitudes')
+    else:
+        # Puedes redirigir a una página de error o mostrar un mensaje si el estado no permite la eliminación
+        return redirect('solicitudes')
 

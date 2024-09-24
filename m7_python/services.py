@@ -2,6 +2,7 @@ from .models import UserProfile, Region, Comuna, Inmueble, Solicitud, User
 
 
 def get_or_create_user_profile(user):
+    print(user.__dict__)
     try:
         user_profile, created = UserProfile.objects.get_or_create(user=user)
         if created:

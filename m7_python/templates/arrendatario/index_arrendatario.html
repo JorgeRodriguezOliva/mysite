@@ -28,12 +28,12 @@
                   <p class="card-text">{{ i.descripcion }}</p>
                   <p class="card-text">{{ i.comuna.nombre }}</p>
                 </div>
-                {% if i.id in solicitados %}
+                {% if i.solicitudes_filtradas.exists %}
                   <div class="card-footer bg-success text-white text-center">
                     <p class="mb-0">Ya solicitado</p>
                   </div>
                 {% else %}
-                  <a href="#" class="btn btn-warning my-2">Solicitar</a>
+                  <a href="{% url 'send_solicitud' inmueble_id=i.id %}" class="btn btn-warning my-2">Solicitar</a>
                 {% endif %}
               </div>
             </a>

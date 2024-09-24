@@ -1,0 +1,55 @@
+<div class="container mt-4">
+    <div class="row g-3">
+        <form id="filters-form" method="GET" class="row g-3 col-md-8">
+            {% csrf_token %}
+            <div class="col-md-4">
+                <label for="region" class="form-label">Región</label>
+                <select name="region" id="region" class="form-select" onchange="updateFilter(event)">
+
+                    {% if selected_region == 'todas' %}
+                    <option value="todas" selected>
+                    {% else %}
+                    <option value="todas">
+                    {% endif %}
+                    Todas las regiones</option>
+
+                    {% for region in regiones %}
+                    {% if selected_region == region.nombre %}
+                    <option value="{{ region.nombre }}" selected >
+                    {% else %}
+                    <option value="{{ region.nombre }}" >
+                    {% endif %}
+                    {{ region.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="comuna" class="form-label">Comuna</label>
+                <select name="comuna" id="comuna" class="form-select" onchange="updateFilter(event)">
+                    {% if selected_comuna == 'todas' %}
+                    <option value="todas" selected>
+                    {% else %}
+                    <option value="todas">
+                    {% endif %}
+                    Todas las comunas</option>
+
+                    {% for comuna in comunas %}
+                    {% if selected_comuna == comuna.nombre %}
+                    <option value="{{ comuna.nombre }}" selected>
+                    {% else %}
+                    <option value="{{ comuna.nombre }}" >
+                    {% endif %}
+                    {{ comuna.nombre }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+        <div class="col-md-4 d-flex align-items-start">
+            {% block search %}
+            {% include 'filtros/search.html' %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
